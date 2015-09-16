@@ -37,6 +37,17 @@ public class Demo{ &hellip;">
 <!--link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"-->
 
+<script>
+    function addBlankTargetForLinks () {
+      $('a[href^="http"]').each(function(){
+          $(this).attr('target', '_blank');
+      });
+    }
+
+    $(document).bind('DOMNodeInserted', function(event) {
+      addBlankTargetForLinks();
+    });
+</script>
   
 
 </head>
@@ -98,6 +109,9 @@ public class Demo{ &hellip;">
 <h2>二级标题</h2>
 
 <p><strong>加粗</strong></p>
+
+<!--more-->
+
 
 <p><code>标亮</code></p>
 

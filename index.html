@@ -9,14 +9,7 @@
   <meta name="author" content="lixiang_x">
 
   
-  <meta name="description" content="第一篇Octopress博客 一级标题 二级标题 加粗 标亮 -一级列表1 -二级列表1 -二级列表2
--一级列表2 -二级列表1 -二级列表2 引用 超链接格式：超链接名称
-JACK的机器人 图片格式： 视频格式： 代码形式： 1
-2
-3
-4
-5
-public class Demo{ &hellip;">
+  <meta name="description" content="第一篇Octopress博客 一级标题 二级标题 加粗 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -37,6 +30,17 @@ public class Demo{ &hellip;">
 <!--link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"-->
 
+<script>
+    function addBlankTargetForLinks () {
+      $('a[href^="http"]').each(function(){
+          $(this).attr('target', '_blank');
+      });
+    }
+
+    $(document).bind('DOMNodeInserted', function(event) {
+      addBlankTargetForLinks();
+    });
+</script>
   
 
 </head>
@@ -102,40 +106,12 @@ public class Demo{ &hellip;">
 
 <p><strong>加粗</strong></p>
 
-<p><code>标亮</code></p>
-
-<p>-一级列表1
-    -二级列表1
-    -二级列表2
--一级列表2
-    -二级列表1
-    -二级列表2</p>
-
-<blockquote><p>引用</p></blockquote>
-
-<p>超链接格式：<a href="%E8%B6%85%E9%93%BE%E6%8E%A5%E5%9C%B0%E5%9D%80">超链接名称</a>
-<a href="http://www.loverobots.cn">JACK的机器人</a></p>
-
-<p>图片格式：<img src="%E5%9B%BE%E7%89%87%E9%93%BE%E6%8E%A5%E5%9C%B0%E5%9D%80" alt="图片描述，相当于Alt" />
-<img src="http://www.loverobots.cn/wp-content/uploads/2015/06/Hacker-empire-01.jpg" alt="像黑客一样写博客" /></p>
-
-<p>视频格式：<video width='600' height='337' preload='metadata' controls poster='http://www.loverobots.cn/wp-content/uploads/2015/06/Kinect-for-Windows-01.jpg'><source src='http://www.loverobots.cn/wp-content/uploads/2015/06/Kinect-for-Windows-01.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></video></p>
-
-<p>代码形式：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public class Demo{
-</span><span class='line'>    public static void main(String[] args){
-</span><span class='line'>        System.out.println("测试代码");
-</span><span class='line'>    }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/09/16/first/">阅读全文&rarr;</a>
+    </footer>
   
 
 

@@ -4,7 +4,7 @@
   <title><![CDATA[薛理想]]></title>
   <link href="http://xlux.github.io/atom.xml" rel="self"/>
   <link href="http://xlux.github.io/"/>
-  <updated>2015-09-17T00:49:14+08:00</updated>
+  <updated>2015-09-17T01:10:04+08:00</updated>
   <id>http://xlux.github.io/</id>
   <author>
     <name><![CDATA[lixiang_x]]></name>
@@ -25,6 +25,9 @@
 <h2>二级标题</h2>
 
 <p><strong>加粗</strong></p>
+
+<!--more-->
+
 
 <p><code>标亮</code></p>
 
