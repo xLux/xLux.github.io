@@ -1,0 +1,40 @@
+---
+layout: post
+title: "文章标题"
+date: 2015-09-16 22:13:55 +0800
+comments: true
+categories: 
+---
+#第一篇Octopress博客
+#一级标题
+##二级标题
+
+**加粗**
+
+`标亮`
+
+-一级列表1
+	-二级列表1
+	-二级列表2
+-一级列表2
+	-二级列表1
+	-二级列表2
+
+>引用
+
+超链接格式：[超链接名称](超链接地址)
+[JACK的机器人](http://www.loverobots.cn)
+
+图片格式：![图片描述，相当于Alt](图片链接地址)
+![像黑客一样写博客](http://www.loverobots.cn/wp-content/uploads/2015/06/Hacker-empire-01.jpg)
+
+视频格式：{% video 视频网址 video http://www.loverobots.cn/wp-content/uploads/2015/06/Kinect-for-Windows-01.mp4 600 337 http://www.loverobots.cn/wp-content/uploads/2015/06/Kinect-for-Windows-01.jpg%}
+
+代码形式：
+```
+public class Demo{
+    public static void main(String[] args){
+        System.out.println("测试代码");
+    }
+}
+```
