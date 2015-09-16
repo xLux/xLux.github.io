@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[My Octopress Blog]]></title>
+  <link href="http://xlux.github.io/atom.xml" rel="self"/>
+  <link href="http://xlux.github.io/"/>
+  <updated>2015-09-16T22:49:48+08:00</updated>
+  <id>http://xlux.github.io/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[文章标题]]></title>
+    <link href="http://xlux.github.io/blog/2015/09/16/first/"/>
+    <updated>2015-09-16T22:13:55+08:00</updated>
+    <id>http://xlux.github.io/blog/2015/09/16/first</id>
+    <content type="html"><![CDATA[<h1>第一篇Octopress博客</h1>
+
+<h1>一级标题</h1>
+
+<h2>二级标题</h2>
+
+<p><strong>加粗</strong></p>
+
+<p><code>标亮</code></p>
+
+<p>-一级列表1
+    -二级列表1
+    -二级列表2
+-一级列表2
+    -二级列表1
+    -二级列表2</p>
+
+<blockquote><p>引用</p></blockquote>
+
+<p>超链接格式：<a href="%E8%B6%85%E9%93%BE%E6%8E%A5%E5%9C%B0%E5%9D%80">超链接名称</a>
+<a href="http://www.loverobots.cn">JACK的机器人</a></p>
+
+<p>图片格式：<img src="%E5%9B%BE%E7%89%87%E9%93%BE%E6%8E%A5%E5%9C%B0%E5%9D%80" alt="图片描述，相当于Alt" />
+<img src="http://www.loverobots.cn/wp-content/uploads/2015/06/Hacker-empire-01.jpg" alt="像黑客一样写博客" /></p>
+
+<p>视频格式：<video width='600' height='337' preload='metadata' controls poster='http://www.loverobots.cn/wp-content/uploads/2015/06/Kinect-for-Windows-01.jpg'><source src='http://www.loverobots.cn/wp-content/uploads/2015/06/Kinect-for-Windows-01.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></video></p>
+
+<p>代码形式：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class Demo{
+</span><span class='line'>    public static void main(String[] args){
+</span><span class='line'>        System.out.println("测试代码");
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+</feed>
