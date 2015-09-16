@@ -3,10 +3,10 @@
 # ----------------------- #
 
 url: http://xlux.github.io
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
-simple_search: https://www.google.com/search
+title: 薛理想
+subtitle: 千里之行  始于足下
+author: lixiang_x
+simple_search: https://www.baidu.com
 description:
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
@@ -99,3 +99,6 @@ google_analytics_tracking_id:
 
 # Facebook Like
 facebook_like: false
+
+# duoshuo
+duoshuo_comment: true
