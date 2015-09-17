@@ -10,7 +10,7 @@
 
   
   <meta name="description" content=" Blog Archive 2015 像黑客一样写博客
-Sep 17 2015 最近更新 像黑客一样写博客 访客统计 ">
+Sep 17 2015 posted in 播客相关 文章分类 播客相关 (1) 最近更新 像黑客一样写博客 访客统计 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -31,16 +31,24 @@ Sep 17 2015 最近更新 像黑客一样写博客 访客统计 ">
 <!--link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"-->
 
-<script>
-    function addBlankTargetForLinks () {
-      $('a[href^="http"]').each(function(){
-          $(this).attr('target', '_blank');
-      });
-    }
+<script type="text/javascript">
 
-    $(document).bind('DOMNodeInserted', function(event) {
-      addBlankTargetForLinks();
-    });
+function addBlankTargetForLinks () {
+
+  $('a[href^="http"]').each(function(){
+
+      $(this).attr('target', '_blank');
+
+  });
+
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+
+  addBlankTargetForLinks();
+
+});
+
 </script>
   
 
@@ -68,8 +76,8 @@ Sep 17 2015 最近更新 像黑客一样写博客 访客统计 ">
 </form>
   
 <ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">归档</a></li>
 </ul>
 
 </nav>
@@ -95,6 +103,10 @@ Sep 17 2015 最近更新 像黑客一样写博客 访客统计 ">
 <h1><a href="/blog/2015/09/17/blogginglikehackers/">像黑客一样写博客</a></h1>
 <time datetime="2015-09-17T22:59:18+08:00" pubdate><span class='month'>Sep</span> <span class='day'>17</span> <span class='year'>2015</span></time>
 
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/bo-ke-xiang-guan/'>播客相关</a></span>
+</footer>
+
 
 </article>
 
@@ -107,7 +119,13 @@ Sep 17 2015 最近更新 像黑客一样写博客 访客统计 ">
 
 <aside class="sidebar">
   
-    <section>
+    <section> 
+  <h1>文章分类</h1> 
+  <ul id="categories"> 
+    <li class='category'><a href='/blog/categories/播客相关/'>播客相关 (1)</a></li>
+ 
+  </ul> 
+</section><section>
   <h1>最近更新</h1>
   <ul id="recent_posts">
     
