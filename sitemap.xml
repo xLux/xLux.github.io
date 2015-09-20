@@ -8,15 +8,21 @@
     <loc>http://xlux.github.io/404.html</loc>
   </url>
   <url>
+    <loc>http://xlux.github.io/blog/archives/</loc>
+  </url>
+  <url>
     <loc>http://xlux.github.io/</loc>
   </url>
   <url>
-    <loc>http://xlux.github.io/blog/archives/</loc>
+    <loc>http://xlux.github.io/blog/categories/</loc>
   </url>
   <url>
     <loc>http://xlux.github.io/demo/</loc>
   </url>
   <url>
-    <loc>http://xlux.github.io/blog/categories/bo-ke-xiang-guan/</loc>
+    <loc>http://xlux.github.io/about/</loc>
+  </url>
+  <url>
+    <loc>http://xlux.github.io/blog/categories/bo-ke-da-jian/</loc>
   </url>
 </urlset>
