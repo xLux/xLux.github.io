@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://xlux.github.io/blog/2015/09/21/uialertcontroller/</loc>
+    <lastmod>2015-09-21T22:04:56+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://xlux.github.io/blog/2015/09/17/blogginglikehackers/</loc>
     <lastmod>2015-09-17T22:59:18+08:00</lastmod>
   </url>
@@ -24,5 +28,8 @@
   </url>
   <url>
     <loc>http://xlux.github.io/blog/categories/bo-ke-da-jian/</loc>
+  </url>
+  <url>
+    <loc>http://xlux.github.io/blog/categories/ioskong-jian/</loc>
   </url>
 </urlset>

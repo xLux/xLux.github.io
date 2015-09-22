@@ -4,7 +4,7 @@
   <title><![CDATA[xLux 的博客]]></title>
   <link href="http://xlux.github.io/atom.xml" rel="self"/>
   <link href="http://xlux.github.io/"/>
-  <updated>2015-09-21T00:24:15+08:00</updated>
+  <updated>2015-09-22T21:50:08+08:00</updated>
   <id>http://xlux.github.io/</id>
   <author>
     <name><![CDATA[xLux]]></name>
@@ -12,6 +12,89 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS8新控件UIAlertController]]></title>
+    <link href="http://xlux.github.io/blog/2015/09/21/uialertcontroller/"/>
+    <updated>2015-09-21T22:04:56+08:00</updated>
+    <id>http://xlux.github.io/blog/2015/09/21/uialertcontroller</id>
+    <content type="html"><![CDATA[<p>UIAlertController是iOS8中新出现的控件，之前项目中一直使用的是UIAlertView，但是iOS9之后，UIAlertView彻底废除了，总结一下两个控件的用法。</p>
+
+<!--more-->
+
+
+<h2>UIAlertView</h2>
+
+<p>UIAlertView对话框是iOS5中出现的控件，不仅可以实现提示用户的作用，还可以添加UITextField输入控件，最多可以添加两个。UIAlertView的使用非常简单，最简单的用法如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>UIAlertView *alertview = [[UIAlertView alloc] initWithTitle:@"标题" message:@"默认样式" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"好的", nil];
+</span><span class='line'>[alertview show];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在UIAlertViewDelegate中监听哪个按钮被按下。
+通过设置alertViewStyle属性来实现输入文字、密码，也可以实现作为登陆框的效果。</p>
+
+<h2>UIAlertController</h2>
+
+<p>UIAlertController的使用也比较简单，按钮的动作回调方法不再使用delegate，而是用block，代码结构看起来更加清晰。UIAlertController可以添加多个UItextField来作为输入框，使用更加灵活。使用方法如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"请输入抢单积分" message:@"积分不能小于5分" preferredStyle:UIAlertControllerStyleAlert];
+</span><span class='line'>            [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+</span><span class='line'>                textField.keyboardType = UIKeyboardTypeNumberPad;
+</span><span class='line'>                textField.placeholder = @"所投积分";
+</span><span class='line'>            }];
+</span><span class='line'>            UIAlertAction *canselAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+</span><span class='line'>            kWeakSelf(self);
+</span><span class='line'>            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+</span><span class='line'>                UITextField *textField = [[alertController textFields] firstObject];
+</span><span class='line'>                if (textField.text.length == 0) {
+</span><span class='line'>                    ALTip *tip = [[ALTip alloc] init];
+</span><span class='line'>                    tip.tip = @"请输入积分";
+</span><span class='line'>                    tip.parent = weakSelf;
+</span><span class='line'>                    [tip show];
+</span><span class='line'>                }else if([textField.text integerValue] &lt;= 5){
+</span><span class='line'>                    ALTip *tip = [[ALTip alloc] init];
+</span><span class='line'>                    tip.tip = @"输入的积分不符合规则";
+</span><span class='line'>                    tip.parent = weakSelf;
+</span><span class='line'>                    [tip show];
+</span><span class='line'>                }else{
+</span><span class='line'>                    [weakSelf getTheGrab:textField.text];
+</span><span class='line'>                }
+</span><span class='line'>            }];
+</span><span class='line'>            [alertController addAction:canselAction];
+</span><span class='line'>            [alertController addAction:okAction];
+</span><span class='line'>            [self presentViewController:alertController animated:YES completion:nil];</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[像黑客一样写博客]]></title>
