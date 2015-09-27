@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>像黑客一样写博客 - xLux 的博客</title>
+  <title>使用Xcode 7和iOS9遇到的问题总结 - xLux 的博客</title>
   <meta name="author" content="xLux">
 
   
-  <meta name="description" content="感谢 首先感谢JACK的机器人的总结，本来准备部署好之后写篇博客记录一下整个过程、步骤，但是当看到了JACK的机器人写的像黑客一样写博客之后，就放弃了这个想法，感觉再写也无法出其右。在此Mark一下，虽然博主是在Windows上部署，但是整个的流程是一样的。 对Octopress的理解 &hellip;">
+  <meta name="description" content="1、Bitcode Bitcode是被编译程序的一种中间形式的代码。包含Bitcode配置的程序将会在App Store上被编译和链接。当我们提交程序到App Store时，Xcode会将程序编译为一个中间形式，也就是Bitcode，然后App Store会再将这个Bitcode编译为64位程序。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://xlux.github.io/blog/2015/09/17/blogginglikehackers/">
+  <link rel="canonical" href="http://xlux.github.io/blog/2015/09/26/adapterios9problems/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="xLux 的博客" type="application/atom+xml">
@@ -68,7 +68,7 @@
   
   <header>
     
-      <h1 class="entry-title">像黑客一样写博客</h1>
+      <h1 class="entry-title">使用Xcode 7和iOS9遇到的问题总结</h1>
     
     
       <p class="meta">
@@ -77,31 +77,34 @@
 
 
 
-<time class='entry-date' datetime='2015-09-17T22:59:18+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:59 pm</span></time>
+<time class='entry-date' datetime='2015-09-26T20:49:32+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:49 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p><strong>感谢</strong></p>
+<div class="entry-content"><h2>1、Bitcode</h2>
 
-<p>首先感谢JACK的机器人的总结，本来准备部署好之后写篇博客记录一下整个过程、步骤，但是当看到了<code>JACK的机器人</code>写的<a href="http://www.loverobots.cn/website-construction/octopress">像黑客一样写博客</a>之后，就放弃了这个想法，感觉再写也无法出其右。在此Mark一下，虽然博主是在Windows上部署，但是整个的流程是一样的。</p>
+<p>Bitcode是被编译程序的一种中间形式的代码。包含Bitcode配置的程序将会在App Store上被编译和链接。当我们提交程序到App Store时，Xcode会将程序编译为一个中间形式，也就是Bitcode，然后App Store会再将这个Bitcode编译为64位程序。Bitcode允许苹果在后期重新优化我们程序的二进制文件，而不需要我们重新提交一个新版本到App Store上(比如编译器更新，苹果会自动用之前提交的Bitcode进行优化，这样就不必再编译器更新后再次提交App也能享受编译器升级带来的好处。另外比如我们的软件包中一般都有2x和3x的图片，在iOS9中可以只选择需要的内容下载，节省了用户的流量)。<!--more--><br>在Watch中的应用必须包含Bitcode，iOS不强制，MacOS不支持，但是在Xcode 7及以上版本中会默认开启Bitcode。但是有一些第三方的包还不支持Bitcode，就只能通过修改编译选项了，如下图：<br><img src="http://www.loverobots.cn/wp-content/uploads/2015/06/Hacker-empire-01.jpg" alt="关闭Bitcode" /><br></p>
 
-<!--more-->
+<h2>2、网络协议</h2>
 
+<p>iOS9之后改用更安全的https，如果应用中还是使用的HTTP通讯协议，则不能成功，需要在info.plist文件中加上以下声明：<br>
+<img src="" alt="使用HTTP" /><br></p>
 
-<p><strong>对Octopress的理解</strong></p>
+<h2>3、应用跳转白名单URL Scheme</h2>
 
-<p>Octopress是一种静态博客框架，以Ruby语言为开发语言，依赖于各种Gem包，自动生成HTML文件和文件夹路径。框架的好处就在于敏捷开发，快速投入使用！使用Octopress作为框架，环境的搭建是一大块，之后只需几个命令便可在本地进行预览！可以与github关联起来，由于github提供Pages功能，将本地Octopress与自己的github Pages工程进行绑定即可，然后便可通过rake deploy命令部署到github。写博客使用markdown语法进行编辑，感觉还真有点码代码的感觉！-_-~~~</p>
+<p>iOS9中引入了白名单的概念，应用间的跳转需要在info.plist中进行配置，如下图：<img src="" alt="URLScheme" /><br></p>
 
-<p><strong>为什么要通过这种方式写博客？</strong></p>
+<h2>4、上传App Store时遇到的问题</h2>
 
-<p>写博客的好处不言而喻，通过第三方的博客系统，只需要把内容填上去即可，无需为各种界面性的东西操心。这对于非程序员来说肯定是简便的一种写博客的方式，但是对于工程师极客来说，不折腾一下怎么可以！！！折腾的过程就是学习和享受的过程！半年前就使用Octopress折腾过一次，当时搭建好之后就一直丢在那，没有去用。最近看了一些Ruby on Rails方面的东西，又想起这个博客框架，从头开始折腾！</p>
+<p><img src="" alt="上传App遇到的问题" /><br>
+需要进入到对应bundle目录下的info.plist文件中做相应的修改即可。</p>
 
-<p><strong>千里之行 始于足下</strong></p>
+<h2>5、使用UIAlertView作为输入框</h2>
 
-<p>之前也在其他博客上写过一些文字，今后就以此为根据地，记录学习成长的历程！合抱之木，生于毫末；九层之台，起于垒土；千里之行，始于足下。</p>
+<p>iOS9中正式废除了UIAlertView，改为使用UIAlertController，可以参考我的<a href="http://www.xuelixiang.com/blog/2015/09/21/uialertcontroller/">这篇博客</a>。</p>
 </div>
 
 
@@ -117,12 +120,12 @@
 
 
 
-<time class='entry-date' datetime='2015-09-17T22:59:18+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:59 pm</span></time>
+<time class='entry-date' datetime='2015-09-26T20:49:32+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:49 pm</span></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/bo-ke-da-jian/'>博客搭建</a>
+    <a class='category' href='/blog/categories/ioskai-fa/'>ios开发</a>
   
 </span>
 
@@ -138,8 +141,10 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2015/09/21/uialertcontroller/" title="Previous Post: iOS8新控件UIAlertController">&laquo; iOS8新控件UIAlertController</a>
       
-        <a class="basic-alignment right" href="/blog/2015/09/21/uialertcontroller/" title="Next Post: iOS8新控件UIAlertController">iOS8新控件UIAlertController &raquo;</a>
+      
+        <a class="basic-alignment right" href="/blog/2015/09/27/octopresscategorychinese/" title="Next Post: octopress使用中文分类">octopress使用中文分类 &raquo;</a>
       
     </p>
   </footer>
@@ -148,7 +153,7 @@
   <section>
     <h1>Comments</h1>
     <div id="disqus_thread" aria-live="polite"><!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/blog/2015/09/17/blogginglikehackers}" data-title="像黑客一样写博客}" data-url="http://xlux.github.io/blog/2015/09/17/blogginglikehackers/"></div>
+	<div class="ds-thread" data-thread-key="/blog/2015/09/26/adapterios9problems}" data-title="使用Xcode 7和iOS9遇到的问题总结}" data-url="http://xlux.github.io/blog/2015/09/26/adapterios9problems/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">

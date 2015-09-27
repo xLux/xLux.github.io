@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 博客搭建 | xLux 的博客]]></title>
   <link href="http://xlux.github.io/blog/categories/bo-ke-da-jian/atom.xml" rel="self"/>
   <link href="http://xlux.github.io/"/>
-  <updated>2015-09-26T09:04:39+08:00</updated>
+  <updated>2015-09-27T12:25:03+08:00</updated>
   <id>http://xlux.github.io/</id>
   <author>
     <name><![CDATA[xLux]]></name>
@@ -12,6 +12,87 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress使用中文分类]]></title>
+    <link href="http://xlux.github.io/blog/2015/09/27/octopresscategorychinese/"/>
+    <updated>2015-09-27T11:18:30+08:00</updated>
+    <id>http://xlux.github.io/blog/2015/09/27/octopresscategorychinese</id>
+    <content type="html"><![CDATA[<p>在使用octopress博客创建分类列表时，碰到了如果分类名为中文的话，点击之后弹出404页面的问题，下面先列举出网上创建分类列表的基本步骤
+然后给出相应问题的解决方法。</p>
+
+<!--more-->
+
+
+<h2>侧边栏分类的添加</h2>
+
+<h3>1、category_list_tag.rb文件<br></h3>
+
+<p>新建plugins/category_list_tag.rb,添加以下内容：<br>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>module Jekyll
+</span><span class='line'>  class CategoryListTag &lt; Liquid::Tag
+</span><span class='line'>    def render(context)
+</span><span class='line'>      html = &ldquo;&rdquo;
+</span><span class='line'>      categories = context.registers[:site].categories.keys
+</span><span class='line'>      categories.sort.each do |category|
+</span><span class='line'>        posts_in_category = context.registers[:site].categories[category].size
+</span><span class='line'>        category_dir = context.registers[:site].config[&lsquo;category_dir&rsquo;]
+</span><span class='line'>        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, &lsquo;-&rsquo;).gsub(/-{2,}/, &lsquo;-&rsquo;).downcase)
+</span><span class='line'>        html &lt;&lt; &ldquo;&lt;li class='category'&gt;&lt;a href='http://xlux.github.io/#{category_url}/'&gt;#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n&rdquo;
+</span><span class='line'>      end
+</span><span class='line'>      html
+</span><span class='line'>    end
+</span><span class='line'>  end
+</span><span class='line'>end&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Liquid::Template.register_tag(&lsquo;category_list&rsquo;, Jekyll::CategoryListTag)</span></code></pre></td></tr></table></div></figure>
+以上为Ruby文件的内容,这个插件向liquid注册一个category_list的tag，该tag以li的形式将站点所有的category组织起来。要将category加入到侧边
+栏，需要增加一个aside的HTML文件。</p>
+
+<h3>2、增加aside文件</h3>
+
+<p>创建source/_includes/asides/category_list.html，并添加以下内容：<br>
+<img src="" alt="图片" /><br>
+注意：如果有中文的话注意保存格式，无BOM，UTF-8</p>
+
+<h3>3、修改_config.yml文件</h3>
+
+<p>修改_config.yml文件侧边栏配置选项default_asides,在相应位置将上面创建的HTML文件加上，如下：
+<code>
+default_asides: [asides/category_list.html, asides/recent_posts.html]
+</code></p>
+
+<h2>遇到的问题及解决办法</h2>
+
+<p>使用以上方法配置之后，如果文章中得categories中带有中文的话，点击之后会提示找不到页面。这是因为我们在category_list_tag.rb文件中生成的HTML文件的路径不正确，
+查看_deploy/blog/categories/目录下，分类的文件夹名字是拼音加横线的形式，而我们并没有进行相应的处理操作，将category_list_tag.rb文件中的
+<code>
+html &lt;&lt; "&lt;li class='category'&gt;&lt;a href='http://xlux.github.io/#{category_url}/'&gt;#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n"
+</code>
+替换为：
+<code>
+html &lt;&lt; "&lt;li class='category'&gt;&lt;a href='http://xlux.github.io/blog/categories/#{category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').to_url.downcase}/'&gt;#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n"
+</code>
+即可。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[像黑客一样写博客]]></title>
