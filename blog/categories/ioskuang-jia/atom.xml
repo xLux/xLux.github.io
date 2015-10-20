@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ios框架 | xLux 的博客]]></title>
+  <link href="http://xlux.github.io/blog/categories/ioskuang-jia/atom.xml" rel="self"/>
+  <link href="http://xlux.github.io/"/>
+  <updated>2015-10-20T13:37:20+08:00</updated>
+  <id>http://xlux.github.io/</id>
+  <author>
+    <name><![CDATA[xLux]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[iOS8照片框架PhotoKit]]></title>
+    <link href="http://xlux.github.io/blog/2015/09/30/photokit/"/>
+    <updated>2015-09-30T20:03:10+08:00</updated>
+    <id>http://xlux.github.io/blog/2015/09/30/photokit</id>
+    <content type="html"><![CDATA[<p>PhotoKit是iOS8中引入的照片框架，iOS8以前使用AssetsLibrary框架来访问设备的照片库。PhotoKit的使用非常方便，照片的分类文件夹更加明确，下面总结一下PhotoKit的使用方式，并在最后附上使用Demo。<br></p>
+
+<!--more-->
+
+
+<h2>1、PhotoKit的基本构成</h2>
+
+<p>-PHAsset：代表照片库中的一个资源，跟ALAsset类似，通过PHAsset可以获取和保存资源；<br>
+-PHFetchOptions：获取资源是采用的获取参数，可以为nil，使用系统默认值；<br>
+-PHAssetCollection：PHCollection的子类，表示一个相册或者一个时刻，系统提供的一系列相册，如最近删除、视频列表、收藏、智能相册等；<br>
+-PHFetchResult：表示一系列按指定条件获取到的资源的集合，从PHCollection中获得；<br>
+-PHImageManager：用户处理获取到的资源，可以通过PHImageRequestOptions控制资源的输出尺寸、显示模式等参数；<br>
+-PHImageRequestOptions：用于控制加载图片的一系列参数；<br>
+-PHCollectionList：表示一组PHCollection。</p>
+
+<h2>2、PhotoKit的使用</h2>
+
+<h3>1、资源集合的获取</h3>
+
+<p>根据资源的类型从PHAssetCollection中获取资源，代码如下：<br>
+<code>
+PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
+</code>
+以上代码为获取所有资源，其中AssetCollection有三大类型，如下：<br>
+<code>
+typedef NS_ENUM(NSInteger, PHAssetCollectionType) {
+    PHAssetCollectionTypeAlbum      = 1,
+    PHAssetCollectionTypeSmartAlbum = 2,
+    PHAssetCollectionTypeMoment     = 3,
+} NS_ENUM_AVAILABLE_IOS(8_0);
+</code>
+分别为：相册、智能相册、时刻；下面还有对应的细分相册目录，可以在使用时具体查看，不再列举。</p>
+
+<h3>2、从上一步的代码中选择目标资源</h3>
+
+<p>上面代码得到的PHFetchResult中包含多个 PHAssetCollection，取出我们想要的<br>
+<code>
+PHCollection *collection = fetchResult[indexPath.row];
+if ([collection isKindOfClass:[PHAssetCollection class]]) {
+            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
+            gridVC.assrtsFetchResults = assetsFetchResult;
+            gridVC.assetCollection = assetCollection;
+            [self.navigationController pushViewController:gridVC animated:YES];
+}
+</code></p>
+
+<h3>3、从资源中获取图片</h3>
+
+<pre><code>@property (strong) PHCachingImageManager *imageManager;
+[self.imageManager requestImageForAsset:asset targetSize:CGSizeMake(100, 100) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:cell.bounds];
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.clipsToBounds = YES;
+        imageView.image = result;
+        [cell.contentView addSubview:imageView];
+    }];
+</code></pre>
+
+<p>可以通过设置方法中的各个参数，得到自己想要的图片。</p>
+
+<h3>3、Demo地址及参考资源</h3>
+
+<p>Demo地址：<a href="https://github.com/xlixiang/PhotoKit_iOS.git">https://github.com/xlixiang/PhotoKit_iOS.git</a><br>
+苹果官方资料：<a href="https://developer.apple.com/library/ios/samplecode/UsingPhotosFramework/Introduction/Intro.html#//apple_ref/doc/uid/TP40014575">Example app using Photos framework</a></p>
+]]></content>
+  </entry>
+  
+</feed>

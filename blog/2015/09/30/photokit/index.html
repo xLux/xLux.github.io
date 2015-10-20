@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>iOS8照片框架PhotoKit - xLux 的博客</title>
+  <meta name="author" content="xLux">
+
+  
+  <meta name="description" content="PhotoKit是iOS8中引入的照片框架，iOS8以前使用AssetsLibrary框架来访问设备的照片库。PhotoKit的使用非常方便，照片的分类文件夹更加明确，下面总结一下PhotoKit的使用方式，并在最后附上使用Demo。 1、PhotoKit的基本构成 -PHAsset： &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xlux.github.io/blog/2015/09/30/photokit/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="xLux 的博客" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">xLux 的博客</a></h1>
+  
+    <h2>千里之行  始于足下</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xlux.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">归档</a></li>
+  <li><a href="/blog/classification">分类</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">iOS8照片框架PhotoKit</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-09-30T20:03:10+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:03 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>PhotoKit是iOS8中引入的照片框架，iOS8以前使用AssetsLibrary框架来访问设备的照片库。PhotoKit的使用非常方便，照片的分类文件夹更加明确，下面总结一下PhotoKit的使用方式，并在最后附上使用Demo。<br></p>
+
+<!--more-->
+
+
+<h2>1、PhotoKit的基本构成</h2>
+
+<p>-PHAsset：代表照片库中的一个资源，跟ALAsset类似，通过PHAsset可以获取和保存资源；<br>
+-PHFetchOptions：获取资源是采用的获取参数，可以为nil，使用系统默认值；<br>
+-PHAssetCollection：PHCollection的子类，表示一个相册或者一个时刻，系统提供的一系列相册，如最近删除、视频列表、收藏、智能相册等；<br>
+-PHFetchResult：表示一系列按指定条件获取到的资源的集合，从PHCollection中获得；<br>
+-PHImageManager：用户处理获取到的资源，可以通过PHImageRequestOptions控制资源的输出尺寸、显示模式等参数；<br>
+-PHImageRequestOptions：用于控制加载图片的一系列参数；<br>
+-PHCollectionList：表示一组PHCollection。</p>
+
+<h2>2、PhotoKit的使用</h2>
+
+<h3>1、资源集合的获取</h3>
+
+<p>根据资源的类型从PHAssetCollection中获取资源，代码如下：<br></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上代码为获取所有资源，其中AssetCollection有三大类型，如下：<br></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>typedef NS_ENUM(NSInteger, PHAssetCollectionType) {
+</span><span class='line'>    PHAssetCollectionTypeAlbum      = 1,
+</span><span class='line'>    PHAssetCollectionTypeSmartAlbum = 2,
+</span><span class='line'>    PHAssetCollectionTypeMoment     = 3,
+</span><span class='line'>} NS_ENUM_AVAILABLE_IOS(8_0);</span></code></pre></td></tr></table></div></figure>
+
+
+<p>分别为：相册、智能相册、时刻；下面还有对应的细分相册目录，可以在使用时具体查看，不再列举。</p>
+
+<h3>2、从上一步的代码中选择目标资源</h3>
+
+<p>上面代码得到的PHFetchResult中包含多个 PHAssetCollection，取出我们想要的<br></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>PHCollection *collection = fetchResult[indexPath.row];
+</span><span class='line'>if ([collection isKindOfClass:[PHAssetCollection class]]) {
+</span><span class='line'>            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+</span><span class='line'>            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
+</span><span class='line'>            gridVC.assrtsFetchResults = assetsFetchResult;
+</span><span class='line'>            gridVC.assetCollection = assetCollection;
+</span><span class='line'>            [self.navigationController pushViewController:gridVC animated:YES];
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3、从资源中获取图片</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@property (strong) PHCachingImageManager *imageManager;
+</span><span class='line'>[self.imageManager requestImageForAsset:asset targetSize:CGSizeMake(100, 100) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+</span><span class='line'>        UIImageView *imageView = [[UIImageView alloc] initWithFrame:cell.bounds];
+</span><span class='line'>        imageView.contentMode = UIViewContentModeScaleAspectFill;
+</span><span class='line'>        imageView.clipsToBounds = YES;
+</span><span class='line'>        imageView.image = result;
+</span><span class='line'>        [cell.contentView addSubview:imageView];
+</span><span class='line'>    }];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以通过设置方法中的各个参数，得到自己想要的图片。</p>
+
+<h3>3、Demo地址及参考资源</h3>
+
+<p>Demo地址：<a href="https://github.com/xlixiang/PhotoKit_iOS.git">https://github.com/xlixiang/PhotoKit_iOS.git</a><br>
+苹果官方资料：<a href="https://developer.apple.com/library/ios/samplecode/UsingPhotosFramework/Introduction/Intro.html#//apple_ref/doc/uid/TP40014575">Example app using Photos framework</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">xLux</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-09-30T20:03:10+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:03 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ioskuang-jia/'>ios框架</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/09/27/octopresscategorychinese/" title="Previous Post: octopress使用中文分类">&laquo; octopress使用中文分类</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/blog/2015/09/30/photokit}" data-title="iOS8照片框架PhotoKit}" data-url="http://xlux.github.io/blog/2015/09/30/photokit/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"xlux"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <p><img src="http://7xn37b.com1.z0.glb.clouddn.com/logoImage.png"></p>
+</section>
+<section>
+  <h1>最近更新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/30/photokit/">iOS8照片框架PhotoKit</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/27/octopresscategorychinese/">Octopress使用中文分类</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/26/adapterios9problems/">使用Xcode 7和iOS9遇到的问题总结</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/21/uialertcontroller/">iOS8新控件UIAlertController</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/17/blogginglikehackers/">像黑客一样写博客</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+	<h1>访客统计</h1>
+	<br>
+	<a href="http://info.flagcounter.com/u5ka"><img src="http://s01.flagcounter.com/count2/u5ka/bg_FFFFFF/txt_000000/border_CCCCCC/columns_2/maxflags_10/viewers_0/labels_0/pageviews_0/flags_0/percent_0/" alt="Flag Counter" border="0"></a>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - xLux -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
