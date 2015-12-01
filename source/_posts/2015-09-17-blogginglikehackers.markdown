@@ -3,12 +3,16 @@ layout: post
 title: "像黑客一样写博客"
 date: 2015-09-17 22:59:18 +0800
 comments: true
-categories: 
+categories: "博客搭建"
 ---
 
 **感谢**
 
 首先感谢JACK的机器人的总结，本来准备部署好之后写篇博客记录一下整个过程、步骤，但是当看到了`JACK的机器人`写的[像黑客一样写博客](http://www.loverobots.cn/website-construction/octopress)之后，就放弃了这个想法，感觉再写也无法出其右。在此Mark一下，虽然博主是在Windows上部署，但是整个的流程是一样的。
+<!--more-->
+**对Octopress的理解**
+
+Octopress是一种静态博客框架，以Ruby语言为开发语言，依赖于各种Gem包，自动生成HTML文件和文件夹路径。框架的好处就在于敏捷开发，快速投入使用！使用Octopress作为框架，环境的搭建是一大块，之后只需几个命令便可在本地进行预览！可以与github关联起来，由于github提供Pages功能，将本地Octopress与自己的github Pages工程进行绑定即可，然后便可通过rake deploy命令部署到github。写博客使用markdown语法进行编辑，感觉还真有点码代码的感觉！-_-~~~
 
 **为什么要通过这种方式写博客？**
 
