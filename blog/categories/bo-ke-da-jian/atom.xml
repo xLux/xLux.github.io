@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 博客搭建 | xLux 的博客]]></title>
+  <link href="http://xuelixiang.com/blog/categories/bo-ke-da-jian/atom.xml" rel="self"/>
+  <link href="http://xuelixiang.com/"/>
+  <updated>2015-12-02T12:49:16+08:00</updated>
+  <id>http://xuelixiang.com/</id>
+  <author>
+    <name><![CDATA[xLux]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress使用中文分类]]></title>
+    <link href="http://xuelixiang.com/blog/2015/09/27/octopresscategorychinese/"/>
+    <updated>2015-09-27T11:18:30+08:00</updated>
+    <id>http://xuelixiang.com/blog/2015/09/27/octopresscategorychinese</id>
+    <content type="html"><![CDATA[<p>在使用octopress博客创建分类列表时，碰到了如果分类名为中文的话，点击之后弹出404页面的问题，下面先列举出网上创建分类列表的基本步骤
+然后给出相应问题的解决方法。</p>
+
+<!--more-->
+
+
+<h2>侧边栏分类的添加</h2>
+
+<h3>1、category_list_tag.rb文件<br></h3>
+
+<p>新建plugins/category_list_tag.rb,添加以下内容：<br>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>module Jekyll
+</span><span class='line'>  class CategoryListTag &lt; Liquid::Tag
+</span><span class='line'>    def render(context)
+</span><span class='line'>      html = &ldquo;&rdquo;
+</span><span class='line'>      categories = context.registers[:site].categories.keys
+</span><span class='line'>      categories.sort.each do |category|
+</span><span class='line'>        posts_in_category = context.registers[:site].categories[category].size
+</span><span class='line'>        category_dir = context.registers[:site].config[&lsquo;category_dir&rsquo;]
+</span><span class='line'>        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, &lsquo;-&rsquo;).gsub(/-{2,}/, &lsquo;-&rsquo;).downcase)
+</span><span class='line'>        html &lt;&lt; &ldquo;&lt;li class='category'&gt;&lt;a href='http://xuelixiang.com/#{category_url}/'&gt;#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n&rdquo;
+</span><span class='line'>      end
+</span><span class='line'>      html
+</span><span class='line'>    end
+</span><span class='line'>  end
+</span><span class='line'>end&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Liquid::Template.register_tag(&lsquo;category_list&rsquo;, Jekyll::CategoryListTag)</span></code></pre></td></tr></table></div></figure>
+以上为Ruby文件的内容,这个插件向liquid注册一个category_list的tag，该tag以li的形式将站点所有的category组织起来。要将category加入到侧边
+栏，需要增加一个aside的HTML文件。</p>
+
+<h3>2、增加aside文件</h3>
+
+<p>创建source/_includes/asides/category_list.html，并添加以下内容：<br>
+<img src="http://7xn37b.com1.z0.glb.clouddn.com/categoriesimage1.png" alt="图片" /><br>
+注意：如果有中文的话注意保存格式，无BOM，UTF-8</p>
+
+<h3>3、修改_config.yml文件</h3>
+
+<p>修改_config.yml文件侧边栏配置选项default_asides,在相应位置将上面创建的HTML文件加上，如下：
+<code>
+default_asides: [asides/category_list.html, asides/recent_posts.html]
+</code></p>
+
+<h2>遇到的问题及解决办法</h2>
+
+<p>使用以上方法配置之后，如果文章中得categories中带有中文的话，点击之后会提示找不到页面。这是因为我们在category_list_tag.rb文件中生成的HTML文件的路径不正确，
+查看_deploy/blog/categories/目录下，分类的文件夹名字是拼音加横线的形式，而我们并没有进行相应的处理操作，将category_list_tag.rb文件中的
+<code>
+html &lt;&lt; "&lt;li class='category'&gt;&lt;a href='http://xuelixiang.com/#{category_url}/'&gt;#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n"
+</code>
+替换为：
+<code>
+html &lt;&lt; "&lt;li class='category'&gt;&lt;a href='http://xuelixiang.com/blog/categories/#{category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').to_url.downcase}/'&gt;#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n"
+</code>
+即可。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[像黑客一样写博客]]></title>
+    <link href="http://xuelixiang.com/blog/2015/09/17/blogginglikehackers/"/>
+    <updated>2015-09-17T22:59:18+08:00</updated>
+    <id>http://xuelixiang.com/blog/2015/09/17/blogginglikehackers</id>
+    <content type="html"><![CDATA[<p><strong>感谢</strong></p>
+
+<p>首先感谢JACK的机器人的总结，本来准备部署好之后写篇博客记录一下整个过程、步骤，但是当看到了<code>JACK的机器人</code>写的<a href="http://www.loverobots.cn/website-construction/octopress">像黑客一样写博客</a>之后，就放弃了这个想法，感觉再写也无法出其右。在此Mark一下，虽然博主是在Windows上部署，但是整个的流程是一样的。</p>
+
+<!--more-->
+
+
+<p><strong>对Octopress的理解</strong></p>
+
+<p>Octopress是一种静态博客框架，以Ruby语言为开发语言，依赖于各种Gem包，自动生成HTML文件和文件夹路径。框架的好处就在于敏捷开发，快速投入使用！使用Octopress作为框架，环境的搭建是一大块，之后只需几个命令便可在本地进行预览！可以与github关联起来，由于github提供Pages功能，将本地Octopress与自己的github Pages工程进行绑定即可，然后便可通过rake deploy命令部署到github。写博客使用markdown语法进行编辑，感觉还真有点码代码的感觉！-_-~~~</p>
+
+<p><strong>为什么要通过这种方式写博客？</strong></p>
+
+<p>写博客的好处不言而喻，通过第三方的博客系统，只需要把内容填上去即可，无需为各种界面性的东西操心。这对于非程序员来说肯定是简便的一种写博客的方式，但是对于工程师极客来说，不折腾一下怎么可以！！！折腾的过程就是学习和享受的过程！半年前就使用Octopress折腾过一次，当时搭建好之后就一直丢在那，没有去用。最近看了一些Ruby on Rails方面的东西，又想起这个博客框架，从头开始折腾！</p>
+
+<p><strong>千里之行 始于足下</strong></p>
+
+<p>之前也在其他博客上写过一些文字，今后就以此为根据地，记录学习成长的历程！合抱之木，生于毫末；九层之台，起于垒土；千里之行，始于足下。</p>
+]]></content>
+  </entry>
+  
+</feed>

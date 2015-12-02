@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>使用Xcode 7和iOS9遇到的问题总结 - xLux 的博客</title>
+  <meta name="author" content="xLux">
+
+  
+  <meta name="description" content="1、Bitcode Bitcode是被编译程序的一种中间形式的代码。包含Bitcode配置的程序将会在App Store上被编译和链接。当我们提交程序到App Store时，Xcode会将程序编译为一个中间形式，也就是Bitcode，然后App Store会再将这个Bitcode编译为64位程序。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xuelixiang.com/blog/2015/09/26/adapterios9problems/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="xLux 的博客" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">xLux 的博客</a></h1>
+  
+    <h2>千里之行  始于足下</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xuelixiang.com">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">归档</a></li>
+  <li><a href="/blog/classification">分类</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">使用Xcode 7和iOS9遇到的问题总结</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-09-26T20:49:32+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:49 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>1、Bitcode</h2>
+
+<p>Bitcode是被编译程序的一种中间形式的代码。包含Bitcode配置的程序将会在App Store上被编译和链接。当我们提交程序到App Store时，Xcode会将程序编译为一个中间形式，也就是Bitcode，然后App Store会再将这个Bitcode编译为64位程序。Bitcode允许苹果在后期重新优化我们程序的二进制文件，而不需要我们重新提交一个新版本到App Store上(比如编译器更新，苹果会自动用之前提交的Bitcode进行优化，这样就不必再编译器更新后再次提交App也能享受编译器升级带来的好处。另外比如我们的软件包中一般都有2x和3x的图片，在iOS9中可以只选择需要的内容下载，节省了用户的流量)。<!--more--><br>在Watch中的应用必须包含Bitcode，iOS不强制，MacOS不支持，但是在Xcode 7及以上版本中会默认开启Bitcode。但是有一些第三方的包还不支持Bitcode，就只能通过修改编译选项了，如下图：<br><img src="http://7xn37b.com1.z0.glb.clouddn.com/Bitcode.png" alt="关闭Bitcode" /><br></p>
+
+<h2>2、网络协议</h2>
+
+<p>iOS9之后改用更安全的https，如果应用中还是使用的HTTP通讯协议，则不能成功，需要在info.plist文件中加上以下声明：<br>
+<img src="http://7xn37b.com1.z0.glb.clouddn.com/httpsKey.png" alt="使用HTTP" /><br></p>
+
+<h2>3、应用跳转白名单URL Scheme</h2>
+
+<p>iOS9中引入了白名单的概念，应用间的跳转需要在info.plist中进行配置，如下图：<img src="http://7xn37b.com1.z0.glb.clouddn.com/URLScheme.png" alt="URLScheme" /><br></p>
+
+<h2>4、上传App Store时遇到的问题</h2>
+
+<p><img src="http://7xn37b.com1.z0.glb.clouddn.com/TencentOpenApiBundle.png" alt="上传App遇到的问题" /><br>
+需要进入到对应bundle目录下的info.plist文件中做相应的修改即可。</p>
+
+<h2>5、使用UIAlertView作为输入框</h2>
+
+<p>iOS9中正式废除了UIAlertView，改为使用UIAlertController，可以参考我的<a href="http://www.xuelixiang.com/blog/2015/09/21/uialertcontroller/">这篇博客</a>。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">xLux</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-09-26T20:49:32+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:49 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ioskai-fa/'>ios开发</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/09/21/uialertcontroller/" title="Previous Post: iOS8新控件UIAlertController">&laquo; iOS8新控件UIAlertController</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/09/27/octopresscategorychinese/" title="Next Post: octopress使用中文分类">octopress使用中文分类 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/blog/2015/09/26/adapterios9problems}" data-title="使用Xcode 7和iOS9遇到的问题总结}" data-url="http://xuelixiang.com/blog/2015/09/26/adapterios9problems/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"xlux"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <p><img src="http://7xn37b.com1.z0.glb.clouddn.com/logoImage.png"></p>
+</section>
+<section>
+  <h1>最近更新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/30/photokit/">iOS8照片框架PhotoKit</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/27/octopresscategorychinese/">Octopress使用中文分类</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/26/adapterios9problems/">使用Xcode 7和iOS9遇到的问题总结</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/21/uialertcontroller/">iOS8新控件UIAlertController</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/17/blogginglikehackers/">像黑客一样写博客</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+	<h1>访客统计</h1>
+	<br>
+	<a href="http://info.flagcounter.com/u5ka"><img src="http://s01.flagcounter.com/count2/u5ka/bg_FFFFFF/txt_000000/border_CCCCCC/columns_2/maxflags_10/viewers_0/labels_0/pageviews_0/flags_0/percent_0/" alt="Flag Counter" border="0"></a>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - xLux -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

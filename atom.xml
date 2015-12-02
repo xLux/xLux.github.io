@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[xLux 的博客]]></title>
+  <link href="http://xuelixiang.com/atom.xml" rel="self"/>
+  <link href="http://xuelixiang.com/"/>
+  <updated>2015-12-02T12:49:16+08:00</updated>
+  <id>http://xuelixiang.com/</id>
+  <author>
+    <name><![CDATA[xLux]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[iOS8照片框架PhotoKit]]></title>
+    <link href="http://xuelixiang.com/blog/2015/09/30/photokit/"/>
+    <updated>2015-09-30T20:03:10+08:00</updated>
+    <id>http://xuelixiang.com/blog/2015/09/30/photokit</id>
+    <content type="html"><![CDATA[<p>PhotoKit是iOS8中引入的照片框架，iOS8以前使用AssetsLibrary框架来访问设备的照片库。PhotoKit的使用非常方便，照片的分类文件夹更加明确，下面总结一下PhotoKit的使用方式，并在最后附上使用Demo。<br></p>
+
+<!--more-->
+
+
+<h2>1、PhotoKit的基本构成</h2>
+
+<p>-PHAsset：代表照片库中的一个资源，跟ALAsset类似，通过PHAsset可以获取和保存资源；<br>
+-PHFetchOptions：获取资源是采用的获取参数，可以为nil，使用系统默认值；<br>
+-PHAssetCollection：PHCollection的子类，表示一个相册或者一个时刻，系统提供的一系列相册，如最近删除、视频列表、收藏、智能相册等；<br>
+-PHFetchResult：表示一系列按指定条件获取到的资源的集合，从PHCollection中获得；<br>
+-PHImageManager：用户处理获取到的资源，可以通过PHImageRequestOptions控制资源的输出尺寸、显示模式等参数；<br>
+-PHImageRequestOptions：用于控制加载图片的一系列参数；<br>
+-PHCollectionList：表示一组PHCollection。</p>
+
+<h2>2、PhotoKit的使用</h2>
+
+<h3>1、资源集合的获取</h3>
+
+<p>根据资源的类型从PHAssetCollection中获取资源，代码如下：<br></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上代码为获取所有资源，其中AssetCollection有三大类型，如下：<br></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>typedef NS_ENUM(NSInteger, PHAssetCollectionType) {
+</span><span class='line'>    PHAssetCollectionTypeAlbum      = 1,
+</span><span class='line'>    PHAssetCollectionTypeSmartAlbum = 2,
+</span><span class='line'>    PHAssetCollectionTypeMoment     = 3,
+</span><span class='line'>} NS_ENUM_AVAILABLE_IOS(8_0);</span></code></pre></td></tr></table></div></figure>
+
+
+<p>分别为：相册、智能相册、时刻；下面还有对应的细分相册目录，可以在使用时具体查看，不再列举。</p>
+
+<h3>2、从上一步的代码中选择目标资源</h3>
+
+<p>上面代码得到的PHFetchResult中包含多个 PHAssetCollection，取出我们想要的<br></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>PHCollection *collection = fetchResult[indexPath.row];
+</span><span class='line'>if ([collection isKindOfClass:[PHAssetCollection class]]) {
+</span><span class='line'>            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+</span><span class='line'>            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
+</span><span class='line'>            gridVC.assrtsFetchResults = assetsFetchResult;
+</span><span class='line'>            gridVC.assetCollection = assetCollection;
+</span><span class='line'>            [self.navigationController pushViewController:gridVC animated:YES];
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3、从资源中获取图片</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@property (strong) PHCachingImageManager *imageManager;
+</span><span class='line'>[self.imageManager requestImageForAsset:asset targetSize:CGSizeMake(100, 100) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+</span><span class='line'>        UIImageView *imageView = [[UIImageView alloc] initWithFrame:cell.bounds];
+</span><span class='line'>        imageView.contentMode = UIViewContentModeScaleAspectFill;
+</span><span class='line'>        imageView.clipsToBounds = YES;
+</span><span class='line'>        imageView.image = result;
+</span><span class='line'>        [cell.contentView addSubview:imageView];
+</span><span class='line'>    }];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以通过设置方法中的各个参数，得到自己想要的图片。</p>
+
+<h3>3、Demo地址及参考资源</h3>
+
+<p>Demo地址：<a href="https://github.com/xlixiang/PhotoKit_iOS.git">https://github.com/xlixiang/PhotoKit_iOS.git</a><br>
+苹果官方资料：<a href="https://developer.apple.com/library/ios/samplecode/UsingPhotosFramework/Introduction/Intro.html#//apple_ref/doc/uid/TP40014575">Example app using Photos framework</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress使用中文分类]]></title>
+    <link href="http://xuelixiang.com/blog/2015/09/27/octopresscategorychinese/"/>
+    <updated>2015-09-27T11:18:30+08:00</updated>
+    <id>http://xuelixiang.com/blog/2015/09/27/octopresscategorychinese</id>
+    <content type="html"><![CDATA[<p>在使用octopress博客创建分类列表时，碰到了如果分类名为中文的话，点击之后弹出404页面的问题，下面先列举出网上创建分类列表的基本步骤
+然后给出相应问题的解决方法。</p>
+
+<!--more-->
+
+
+<h2>侧边栏分类的添加</h2>
+
+<h3>1、category_list_tag.rb文件<br></h3>
+
+<p>新建plugins/category_list_tag.rb,添加以下内容：<br></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>module Jekyll
+</span><span class='line'>  class CategoryListTag &lt; Liquid::Tag
+</span><span class='line'>    def render(context)
+</span><span class='line'>      html = ""
+</span><span class='line'>      categories = context.registers[:site].categories.keys
+</span><span class='line'>      categories.sort.each do |category|
+</span><span class='line'>        posts_in_category = context.registers[:site].categories[category].size
+</span><span class='line'>        category_dir = context.registers[:site].config['category_dir']
+</span><span class='line'>        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase)
+</span><span class='line'>        html &lt;&lt; "&lt;li class='category'&gt;&lt;a href='http://xuelixiang.com/#{category_url}/'&gt;#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n"
+</span><span class='line'>      end
+</span><span class='line'>      html
+</span><span class='line'>    end
+</span><span class='line'>  end
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上为Ruby文件的内容,这个插件向liquid注册一个category_list的tag，该tag以li的形式将站点所有的category组织起来。要将category加入到侧边
+栏，需要增加一个aside的HTML文件。</p>
+
+<h3>2、增加aside文件</h3>
+
+<p>创建source/_includes/asides/category_list.html，并添加以下内容：<br>
+<img src="http://7xn37b.com1.z0.glb.clouddn.com/categoriesimage1.png" alt="图片" /><br>
+注意：如果有中文的话注意保存格式，无BOM，UTF-8</p>
+
+<h3>3、修改_config.yml文件</h3>
+
+<p>修改_config.yml文件侧边栏配置选项default_asides,在相应位置将上面创建的HTML文件加上，如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>default_asides: [asides/category_list.html, asides/recent_posts.html]</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>遇到的问题及解决办法</h2>
+
+<p>使用以上方法配置之后，如果文章中得categories中带有中文的话，点击之后会提示找不到页面。这是因为我们在category_list_tag.rb文件中生成的HTML文件的路径不正确，
+查看_deploy/blog/categories/目录下，分类的文件夹名字是拼音加横线的形式，而我们并没有进行相应的处理操作，将category_list_tag.rb文件中的</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>html &lt;&lt; "&lt;li class='category'&gt;&lt;a href='http://xuelixiang.com/#{category_url}/'&gt;#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>替换为：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>html &lt;&lt; "&lt;li class='category'&gt;&lt;a href='http://xuelixiang.com/blog/categories/#{category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').to_url.downcase}/'&gt;#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>即可。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[使用Xcode 7和iOS9遇到的问题总结]]></title>
+    <link href="http://xuelixiang.com/blog/2015/09/26/adapterios9problems/"/>
+    <updated>2015-09-26T20:49:32+08:00</updated>
+    <id>http://xuelixiang.com/blog/2015/09/26/adapterios9problems</id>
+    <content type="html"><![CDATA[<h2>1、Bitcode</h2>
+
+<p>Bitcode是被编译程序的一种中间形式的代码。包含Bitcode配置的程序将会在App Store上被编译和链接。当我们提交程序到App Store时，Xcode会将程序编译为一个中间形式，也就是Bitcode，然后App Store会再将这个Bitcode编译为64位程序。Bitcode允许苹果在后期重新优化我们程序的二进制文件，而不需要我们重新提交一个新版本到App Store上(比如编译器更新，苹果会自动用之前提交的Bitcode进行优化，这样就不必再编译器更新后再次提交App也能享受编译器升级带来的好处。另外比如我们的软件包中一般都有2x和3x的图片，在iOS9中可以只选择需要的内容下载，节省了用户的流量)。<!--more--><br>在Watch中的应用必须包含Bitcode，iOS不强制，MacOS不支持，但是在Xcode 7及以上版本中会默认开启Bitcode。但是有一些第三方的包还不支持Bitcode，就只能通过修改编译选项了，如下图：<br><img src="http://7xn37b.com1.z0.glb.clouddn.com/Bitcode.png" alt="关闭Bitcode" /><br></p>
+
+<h2>2、网络协议</h2>
+
+<p>iOS9之后改用更安全的https，如果应用中还是使用的HTTP通讯协议，则不能成功，需要在info.plist文件中加上以下声明：<br>
+<img src="http://7xn37b.com1.z0.glb.clouddn.com/httpsKey.png" alt="使用HTTP" /><br></p>
+
+<h2>3、应用跳转白名单URL Scheme</h2>
+
+<p>iOS9中引入了白名单的概念，应用间的跳转需要在info.plist中进行配置，如下图：<img src="http://7xn37b.com1.z0.glb.clouddn.com/URLScheme.png" alt="URLScheme" /><br></p>
+
+<h2>4、上传App Store时遇到的问题</h2>
+
+<p><img src="http://7xn37b.com1.z0.glb.clouddn.com/TencentOpenApiBundle.png" alt="上传App遇到的问题" /><br>
+需要进入到对应bundle目录下的info.plist文件中做相应的修改即可。</p>
+
+<h2>5、使用UIAlertView作为输入框</h2>
+
+<p>iOS9中正式废除了UIAlertView，改为使用UIAlertController，可以参考我的<a href="http://www.xuelixiang.com/blog/2015/09/21/uialertcontroller/">这篇博客</a>。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS8新控件UIAlertController]]></title>
+    <link href="http://xuelixiang.com/blog/2015/09/21/uialertcontroller/"/>
+    <updated>2015-09-21T22:04:56+08:00</updated>
+    <id>http://xuelixiang.com/blog/2015/09/21/uialertcontroller</id>
+    <content type="html"><![CDATA[<p>UIAlertController是iOS8中新出现的控件，之前项目中一直使用的是UIAlertView，但是iOS9之后，UIAlertView彻底废除了，总结一下两个控件的用法。</p>
+
+<!--more-->
+
+
+<h2>UIAlertView</h2>
+
+<p>UIAlertView对话框是iOS5中出现的控件，不仅可以实现提示用户的作用，还可以添加UITextField输入控件，最多可以添加两个。UIAlertView的使用非常简单，最简单的用法如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>UIAlertView *alertview = [[UIAlertView alloc] initWithTitle:@"标题" message:@"默认样式" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"好的", nil];
+</span><span class='line'>[alertview show];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在UIAlertViewDelegate中监听哪个按钮被按下。
+通过设置alertViewStyle属性来实现输入文字、密码，也可以实现作为登陆框的效果。</p>
+
+<h2>UIAlertController</h2>
+
+<p>UIAlertController的使用也比较简单，按钮的动作回调方法不再使用delegate，而是用block，代码结构看起来更加清晰。UIAlertController可以添加多个UItextField来作为输入框，使用更加灵活。使用方法如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"请输入抢单积分" message:@"积分不能小于5分" preferredStyle:UIAlertControllerStyleAlert];
+</span><span class='line'>            [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+</span><span class='line'>                textField.keyboardType = UIKeyboardTypeNumberPad;
+</span><span class='line'>                textField.placeholder = @"所投积分";
+</span><span class='line'>            }];
+</span><span class='line'>            UIAlertAction *canselAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+</span><span class='line'>            kWeakSelf(self);
+</span><span class='line'>            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+</span><span class='line'>                UITextField *textField = [[alertController textFields] firstObject];
+</span><span class='line'>                if (textField.text.length == 0) {
+</span><span class='line'>                    ALTip *tip = [[ALTip alloc] init];
+</span><span class='line'>                    tip.tip = @"请输入积分";
+</span><span class='line'>                    tip.parent = weakSelf;
+</span><span class='line'>                    [tip show];
+</span><span class='line'>                }else if([textField.text integerValue] &lt;= 5){
+</span><span class='line'>                    ALTip *tip = [[ALTip alloc] init];
+</span><span class='line'>                    tip.tip = @"输入的积分不符合规则";
+</span><span class='line'>                    tip.parent = weakSelf;
+</span><span class='line'>                    [tip show];
+</span><span class='line'>                }else{
+</span><span class='line'>                    [weakSelf getTheGrab:textField.text];
+</span><span class='line'>                }
+</span><span class='line'>            }];
+</span><span class='line'>            [alertController addAction:canselAction];
+</span><span class='line'>            [alertController addAction:okAction];
+</span><span class='line'>            [self presentViewController:alertController animated:YES completion:nil];</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[像黑客一样写博客]]></title>
+    <link href="http://xuelixiang.com/blog/2015/09/17/blogginglikehackers/"/>
+    <updated>2015-09-17T22:59:18+08:00</updated>
+    <id>http://xuelixiang.com/blog/2015/09/17/blogginglikehackers</id>
+    <content type="html"><![CDATA[<p><strong>感谢</strong></p>
+
+<p>首先感谢JACK的机器人的总结，本来准备部署好之后写篇博客记录一下整个过程、步骤，但是当看到了<code>JACK的机器人</code>写的<a href="http://www.loverobots.cn/website-construction/octopress">像黑客一样写博客</a>之后，就放弃了这个想法，感觉再写也无法出其右。在此Mark一下，虽然博主是在Windows上部署，但是整个的流程是一样的。</p>
+
+<!--more-->
+
+
+<p><strong>对Octopress的理解</strong></p>
+
+<p>Octopress是一种静态博客框架，以Ruby语言为开发语言，依赖于各种Gem包，自动生成HTML文件和文件夹路径。框架的好处就在于敏捷开发，快速投入使用！使用Octopress作为框架，环境的搭建是一大块，之后只需几个命令便可在本地进行预览！可以与github关联起来，由于github提供Pages功能，将本地Octopress与自己的github Pages工程进行绑定即可，然后便可通过rake deploy命令部署到github。写博客使用markdown语法进行编辑，感觉还真有点码代码的感觉！-_-~~~</p>
+
+<p><strong>为什么要通过这种方式写博客？</strong></p>
+
+<p>写博客的好处不言而喻，通过第三方的博客系统，只需要把内容填上去即可，无需为各种界面性的东西操心。这对于非程序员来说肯定是简便的一种写博客的方式，但是对于工程师极客来说，不折腾一下怎么可以！！！折腾的过程就是学习和享受的过程！半年前就使用Octopress折腾过一次，当时搭建好之后就一直丢在那，没有去用。最近看了一些Ruby on Rails方面的东西，又想起这个博客框架，从头开始折腾！</p>
+
+<p><strong>千里之行 始于足下</strong></p>
+
+<p>之前也在其他博客上写过一些文字，今后就以此为根据地，记录学习成长的历程！合抱之木，生于毫末；九层之台，起于垒土；千里之行，始于足下。</p>
+]]></content>
+  </entry>
+  
+</feed>
